@@ -3,6 +3,11 @@ const jwt = require('jsonwebtoken')
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
+const { PubSub } = require('graphql-subscriptions')
+
+const pubsub = new PubSub()
+require('dotenv').config()
+
 
 const resolvers = {
   Query: {
@@ -63,6 +68,9 @@ const resolvers = {
         await newBook.save()
         author.books = author.books.concat(newBook._id)
         await author.save()
+
+        pubsub.publish('BOOK_ADDED', { bookAdded: newBook })
+
         return newBook
       } catch (error) {
         console.log('Adding new book failed', error)
@@ -123,6 +131,11 @@ const resolvers = {
       }
 
       return { value: jwt.sign(userForToken, process.env.SECRET) }
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator('BOOK_ADDED')
     }
   },
 }
