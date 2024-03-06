@@ -1,0 +1,43 @@
+.user-blogs {
+  display: flex;
+  align-items: center;
+
+  p,
+  a {
+    width: 80px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.like-section {
+  display: flex;
+  align-items: center;
+
+  button {
+    margin-left: 1rem;
+  }
+}
+
+.nav-container {
+  display: flex;
+
+  a {
+    text-decoration: none;
+    margin-right: 0.5rem;
+  }
+}
+
+.user-info {
+  margin-left: 0.5rem;
+}
+
+.comments-total {
+  display: flex;
+
+  p {
+    width: 150px;
+  }
+}
