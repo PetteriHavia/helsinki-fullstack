@@ -27,6 +27,7 @@ app.get("/bmi", (req: Request, res: Response) => {
 });
 
 app.post("/calculate", (req: Request, res: Response) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { value1, value2, op } = req.body;
 
   if (!value1 || isNaN(Number(value1))) {
@@ -38,7 +39,11 @@ app.post("/calculate", (req: Request, res: Response) => {
 });
 
 app.post("/exercise", (req: Request, res: Response) => {
-  const { dailyExercises, target } = req.body;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { dailyExercises, target } = req.body as {
+    dailyExercises: number[];
+    target: number;
+  };
 
   if (
     dailyExercises.length < 7 ||
@@ -49,9 +54,7 @@ app.post("/exercise", (req: Request, res: Response) => {
     return res.status(400).json({ error: "parameters missing" });
   }
 
-  const hasNonNumbers = dailyExercises.some(
-    (item: any) => typeof item !== "number"
-  );
+  const hasNonNumbers = dailyExercises.some((item) => typeof item !== "number");
 
   if (hasNonNumbers || isNaN(Number(target))) {
     return res.status(400).json({ error: "malformed parameters" });
@@ -65,5 +68,5 @@ app.post("/exercise", (req: Request, res: Response) => {
 const PORT = 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server is rinnung on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
