@@ -1,23 +1,18 @@
-import { Gender, newPatientEntry } from "./types";
+import { Gender, newPatientEntry } from "../types";
 
-const validateNewEntry = (data: unknown): newPatientEntry => {
+export const validateNewEntry = (data: unknown): newPatientEntry => {
   if (!data || typeof data !== "object") {
     throw new Error("Incorrect or missing data");
   }
 
-  if (
-    "name" in data &&
-    "dateOfBirth" in data &&
-    "ssn" in data &&
-    "occupation" in data &&
-    "gender" in data
-  ) {
+  if ("name" in data && "dateOfBirth" in data && "ssn" in data && "occupation" in data && "gender" in data) {
     const newEntry = {
       name: checkTypeString(data.name),
       dateOfBirth: checkDateOfBirth(data.dateOfBirth),
       ssn: checkTypeString(data.ssn),
       occupation: checkTypeString(data.occupation),
       gender: checkGender(data.gender),
+      entries: [],
     };
     return newEntry;
   }
@@ -51,12 +46,16 @@ const isGender = (gender: string): gender is Gender => {
     .includes(gender);
 };
 
-const isString = (text: unknown): text is string => {
+export const isString = (text: unknown): text is string => {
   return typeof text === "string";
 };
 
-const isDate = (date: string): boolean => {
+export const isDate = (date: string): boolean => {
   return Boolean(Date.parse(date));
 };
 
-export default validateNewEntry;
+export default {
+  validateNewEntry,
+  isString,
+  isDate,
+};
