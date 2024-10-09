@@ -1,14 +1,26 @@
 const blogRouter = require("express").Router()
 const { Blog, blogUser } = require("../models")
 const { userExtractor } = require("../util/middleware")
+const { Op } = require("sequelize")
 
 blogRouter.get("/", async (req, res) => {
+  const where = {}
+
+  if (req.query.search) {
+    where[Op.or] = [
+      { title: { [Op.substring]: req.query.search } },
+      { author: { [Op.substring]: req.query.search } }
+    ]
+  }
+
   const blogs = await Blog.findAll({
     attributes: { exclude: ['userId'] },
+    order: [['likes', 'DESC']],
     include: {
       model: blogUser,
       attributes: ["username"]
-    }
+    },
+    where
   })
   if (blogs.length === 0) {
     return res.json({ message: "No blogs in database" })
