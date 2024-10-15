@@ -2,9 +2,9 @@ const { Model, DataTypes } = require("sequelize")
 const { sequelize } = require("../util/db")
 const bcrypt = require("bcrypt")
 
-class blogUser extends Model { }
+class User extends Model { }
 
-blogUser.init({
+User.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -39,7 +39,8 @@ blogUser.init({
 },
   {
     sequelize,
-    modelName: "blogUser",
+    underscored: true,
+    modelName: "user",
     hooks: {
       async beforeSave(user) {
         if (user.changed("passwordHash")) {
@@ -50,4 +51,4 @@ blogUser.init({
     }
   })
 
-module.exports = blogUser
+module.exports = User
