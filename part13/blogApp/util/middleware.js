@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const { blogUser } = require("../models")
+const { User } = require("../models")
 
 const tokenExtractor = async (req, res, next) => {
   const authorization = req.get('authorization')
@@ -16,7 +16,7 @@ const userExtractor = async (req, res, next) => {
       if (!decodedToken || !decodedToken.id) {
         return res.status(401).json({ error: "Invalid token" })
       }
-      const user = await blogUser.findByPk(decodedToken.id)
+      const user = await User.findByPk(decodedToken.id)
       if (!user) {
         return res.status(401).json({ error: "User not found" })
       }

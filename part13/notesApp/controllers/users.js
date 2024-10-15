@@ -1,5 +1,28 @@
 const router = require("express").Router()
 const { User, Note } = require("../models")
+const { tokenExtractor } = require("../util/middleware")
+
+const isAdmin = async (req, res, next) => {
+  const user = await User.findByPk(req.decodedToken.id)
+  if (!user.admin) {
+    return res.status(401).json({ error: "Oparation not permitted" })
+  }
+  next()
+}
+
+router.put("/:username", tokenExtractor, isAdmin, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { username: req.params.username } })
+    if (!user) {
+      return res.status(404).json({ error: "Username not found" })
+    }
+    user.disabled = req.body.disabled
+    await user.save()
+    res.json(user)
+  } catch (error) {
+    next(error)
+  }
+})
 
 router.get("/", async (req, res) => {
   const users = await User.findAll({

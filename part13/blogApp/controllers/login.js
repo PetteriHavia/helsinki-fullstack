@@ -1,4 +1,4 @@
-const { blogUser } = require("../models")
+const { User } = require("../models")
 const bcrypt = require("bcrypt")
 const route = require("express").Router()
 const jwt = require("jsonwebtoken")
@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken")
 route.post("/", async (req, res) => {
   const { username, password } = req.body
 
-  const user = await blogUser.findOne({ where: { username: username } });
+  const user = await User.findOne({ where: { username: username } });
 
   const passwordCorrect = user === null ? false : await bcrypt.compare(password, user.passwordHash)
 

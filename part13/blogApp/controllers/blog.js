@@ -1,5 +1,5 @@
 const blogRouter = require("express").Router()
-const { Blog, blogUser } = require("../models")
+const { Blog, User } = require("../models")
 const { userExtractor } = require("../util/middleware")
 const { Op } = require("sequelize")
 
@@ -14,10 +14,9 @@ blogRouter.get("/", async (req, res) => {
   }
 
   const blogs = await Blog.findAll({
-    attributes: { exclude: ['userId'] },
     order: [['likes', 'DESC']],
     include: {
-      model: blogUser,
+      model: User,
       attributes: ["username"]
     },
     where
@@ -42,8 +41,8 @@ blogRouter.get("/:id", async (req, res, next) => {
 
 blogRouter.post("/", userExtractor, async (req, res, next) => {
   try {
-    const user = await blogUser.findByPk(req.user.id)
-    const newBlog = await Blog.create({ ...req.body, blogUserId: user.id })
+    const user = await User.findByPk(req.user.id)
+    const newBlog = await Blog.create({ ...req.body, userId: user.id })
     return res.status(201).json(newBlog)
   } catch (error) {
     next(error)
@@ -57,7 +56,7 @@ blogRouter.delete("/:id", userExtractor, async (req, res, next) => {
     if (!blog) {
       return res.status(404).json({ error: "Blog not found" })
     }
-    if (blog.blogUserId !== req.user.id) {
+    if (blog.userId !== req.user.id) {
       return res.status(403).json({ error: "User has no permission to delete this blog " })
     }
     await blog.destroy();
