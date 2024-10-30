@@ -35,6 +35,10 @@ User.init({
         msg: "Password must contain at least 8 characters, one lowercase letter, one uppercase letter, and one number."
       }
     }
+  },
+  disabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 },
   {
