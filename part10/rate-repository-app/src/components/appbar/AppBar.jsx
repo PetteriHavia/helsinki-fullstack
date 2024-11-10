@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, ScrollView } from "react-native"
+import { View, StyleSheet, FlatList } from "react-native"
 import Constants from 'expo-constants'
 import AppBarTab from "./AppBarTab"
 
@@ -26,21 +26,19 @@ const AppBar = () => {
       id: 2,
       label: "Sign In",
       link: "/signin"
-
     }
   ]
 
   return (
     <View style={styles.container}>
-      <ScrollView horizontal>
-        <FlatList
-          horizontal={true}
-          data={tabs}
-          renderItem={({ item }) => <AppBarTab item={item} />}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.flatlistContainer}
-        />
-      </ScrollView>
+      <FlatList
+        horizontal
+        data={tabs}
+        renderItem={({ item }) => <AppBarTab item={item} />}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.flatlistContainer}
+        showsHorizontalScrollIndicator={false}
+      />
     </View>
   )
 }
