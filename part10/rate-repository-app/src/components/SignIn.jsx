@@ -5,7 +5,6 @@ import Text from "./Text"
 import * as yup from "yup"
 
 const SignIn = () => {
-
   const styles = StyleSheet.create({
     form: {
       gap: 10,
