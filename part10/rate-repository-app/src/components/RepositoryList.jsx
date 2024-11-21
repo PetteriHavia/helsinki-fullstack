@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client';
 import { GET_REPOSITORIES } from '../../graphql/queries';
 import RepositoryItem from './RepositoryItem';
 
-
 const styles = StyleSheet.create({
   separator: {
     height: 10,
