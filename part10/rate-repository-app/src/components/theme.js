@@ -6,10 +6,12 @@ const theme = {
     textSecondary: '#586069',
     primary: '#0366d6',
     error: "#d73a4a",
+    white: "#fff"
   },
   fontSizes: {
     body: 14,
-    subheading: 16
+    subheading: 16,
+    heading: 20
   },
   fonts: {
     main: Platform.select({
