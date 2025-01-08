@@ -1,36 +1,14 @@
 import { useFormik } from "formik"
-import { TextInput, Pressable, View, StyleSheet } from "react-native"
-import theme from "./theme"
+import { TextInput, Pressable, View } from "react-native"
 import Text from "./Text"
 import * as yup from "yup"
 import useSignIn from "./hooks/useSignIn"
 import { useNavigate } from "react-router-native"
 import { useState } from "react"
+import formStyles from "./formStyles"
+import { inputStyle } from "./utils/inputStyle"
 
 const SignIn = () => {
-  const styles = StyleSheet.create({
-    form: {
-      gap: 10,
-      paddingHorizontal: 10,
-      paddingVertical: 10
-    },
-    input: {
-      borderColor: theme.colors.textSecondary,
-      borderWidth: 1,
-      paddingHorizontal: 8,
-      paddingVertical: 8,
-      color: theme.colors.textSecondary
-    },
-    formSubmit: {
-      color: "#fff",
-      paddingVertical: 10,
-      textAlign: "center"
-    },
-    inputError: {
-      borderColor: theme.colors.error
-    }
-  })
-
   const [signIn] = useSignIn()
   const navigate = useNavigate()
   const [error, setError] = useState(null)
@@ -65,9 +43,9 @@ const SignIn = () => {
   })
 
   return (
-    <View style={styles.form}>
+    <View style={formStyles.form}>
       <TextInput
-        style={[styles.input, formik.errors.username && styles.inputError]}
+        style={inputStyle(formik, "username")}
         placeholder="Username"
         value={formik.values.username}
         onChangeText={formik.handleChange("username")}
@@ -76,7 +54,7 @@ const SignIn = () => {
         <Text color="error">{formik.errors.username}</Text>
       )}
       <TextInput
-        style={[styles.input, formik.errors.password && styles.inputError]}
+        style={inputStyle(formik, "password")}
         placeholder="Password"
         value={formik.values.password}
         onChangeText={formik.handleChange("password")}
@@ -88,7 +66,7 @@ const SignIn = () => {
       {error && <Text color="error">{error}</Text>}
       <Pressable onPress={formik.handleSubmit}>
         <Text
-          style={styles.formSubmit}
+          style={formStyles.formSubmit}
           textBackground="blue"
         >Sign in
         </Text>

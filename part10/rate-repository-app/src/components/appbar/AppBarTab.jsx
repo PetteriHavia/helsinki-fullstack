@@ -1,12 +1,22 @@
+import { Pressable } from "react-native"
 import Text from "../Text"
-import { Link } from "react-router-native"
+import { useNavigate } from "react-router-native";
 
 const AppBarTab = ({ item }) => {
+  const navigate = useNavigate();
+
+  const handlePress = async () => {
+    if (item.action) {
+      await item.action(); // Wait for the action to complete
+    }
+    navigate(item.link); // Navigate after action is complete
+  };
+
   return (
-    <Link to={item.link}>
-      <Text color="white" fontSize="heading">{item.label}</Text>
-    </Link>
-  )
-}
+    <Pressable onPress={handlePress}>
+      <Text color="white" fontSize="subheading">{item.label}</Text>
+    </Pressable>
+  );
+};
 
 export default AppBarTab

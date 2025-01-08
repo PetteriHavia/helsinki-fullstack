@@ -1,5 +1,6 @@
-import { View, StyleSheet, Image } from "react-native"
+import { View, StyleSheet, Image, Pressable, Animated } from "react-native"
 import Text from "./Text"
+import { useNavigate, useLocation } from "react-router-native"
 
 const styles = StyleSheet.create({
   card: {
@@ -39,7 +40,6 @@ const styles = StyleSheet.create({
 })
 
 const StatItem = ({ value, text }) => {
-
   const formatNumber = (num) => {
     if (isNaN(num)) return "0"
     return num > 1000 ? (num / 1000).toFixed(1) + "k" : `${num}`
@@ -54,23 +54,44 @@ const StatItem = ({ value, text }) => {
 }
 
 const RepositoryItem = ({ item }) => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const fadeAnim = new Animated.Value(0)
+
+  const handlePress = () => {
+    const targetUrl = `/${item.id}`
+    if (location.pathname !== targetUrl) {
+      navigate(targetUrl)
+    }
+  }
+
+  Animated.timing(fadeAnim, {
+    toValue: 1,
+    duration: 500,
+    useNativeDriver: true,
+  }).start()
+
   return (
-    <View style={styles.card}>
-      <View style={styles.flexRow}>
-        <Image style={styles.avatar} source={{ uri: item.ownerAvatarUrl }} />
-        <View style={styles.basicInfo}>
-          <Text fontWeight="bold">{item.fullName}</Text>
-          <Text>{item.description}</Text>
-          <Text style={styles.language} textBackground="blue">{item.language}</Text>
+    <Pressable onPress={handlePress}>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <View style={styles.card}>
+          <View style={styles.flexRow}>
+            <Image style={styles.avatar} source={{ uri: item.ownerAvatarUrl }} />
+            <View style={styles.basicInfo}>
+              <Text fontWeight="bold">{item.fullName}</Text>
+              <Text>{item.description}</Text>
+              <Text style={styles.language} textBackground="blue">{item.language}</Text>
+            </View>
+          </View>
+          <View style={styles.statsContainer}>
+            <StatItem text="Stars" value={item.stargazersCount} />
+            <StatItem text="Forks" value={item.forksCount} />
+            <StatItem text="Reviews" value={item.reviewCount} />
+            <StatItem text="Rating" value={item.ratingAverage} />
+          </View>
         </View>
-      </View>
-      <View style={styles.statsContainer}>
-        <StatItem text="Stars" value={item.stargazersCount} />
-        <StatItem text="Forks" value={item.forksCount} />
-        <StatItem text="Reviews" value={item.reviewCount} />
-        <StatItem text="Rating" value={item.ratingAverage} />
-      </View>
-    </View>
+      </Animated.View>
+    </Pressable>
   )
 }
 

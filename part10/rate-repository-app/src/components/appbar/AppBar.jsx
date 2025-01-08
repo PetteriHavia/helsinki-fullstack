@@ -1,10 +1,8 @@
-import { View, StyleSheet, FlatList, Pressable } from "react-native"
-import Text from "../Text"
+import { View, StyleSheet, FlatList } from "react-native"
 import Constants from 'expo-constants'
 import AppBarTab from "./AppBarTab"
 import { useQuery, useApolloClient } from "@apollo/client"
 import { ME } from "../../../graphql/queries"
-import { Link, useNavigate } from "react-router-native"
 import useAuthStorage from "../hooks/useAuthStorage"
 
 const styles = StyleSheet.create({
@@ -24,15 +22,6 @@ const AppBar = () => {
   const { data } = useQuery(ME)
   const apolloClient = useApolloClient()
   const authStorage = useAuthStorage();
-  const navigate = useNavigate()
-
-  const tabs = [
-    {
-      id: 1,
-      label: "Repositories",
-      link: "/"
-    },
-  ]
 
   const handleLogout = async () => {
     try {
@@ -43,24 +32,31 @@ const AppBar = () => {
     }
   }
 
+  const tabs = [
+    { id: 1, label: "Repositories", link: "/" },
+    ...(data?.me
+      ? [
+        { id: 2, label: "Create a review", link: "/create-review" },
+        { id: 4, label: "My Reviews", link: "/my-reviews" },
+        { id: 3, label: "Sign Out", link: "/signin", action: handleLogout },
+      ]
+      : [
+        { id: 5, label: "Sign In", link: "/signin" },
+        { id: 6, label: "Sign Up", link: "/signup" }
+      ]
+    ),
+  ]
+
   return (
     <View style={styles.container}>
       <FlatList
+        horizontal
         data={tabs}
         renderItem={({ item }) => <AppBarTab item={item} />}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.flatlistContainer}
         showsHorizontalScrollIndicator={false}
       />
-      {data?.me ?
-        <Link to={`/signin`} onPress={handleLogout}>
-          <Text color="white" fontSize="heading">Sign Out</Text>
-        </Link>
-        :
-        <Link to={`/signin`}>
-          <Text color="white" fontSize="heading">Sign In</Text>
-        </Link>
-      }
     </View>
   )
 }
