@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const GET_REPOSITORIES = gql`
-  query ($orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirection, $searchKeyword: String) {
-    repositories (orderBy: $orderBy, orderDirection: $orderDirection, searchKeyword: $searchKeyword){
+  query ($orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirection, $searchKeyword: String
+  $first: Int, $after: String) {
+    repositories (orderBy: $orderBy, orderDirection: $orderDirection, searchKeyword:
+     $searchKeyword, first: $first, after: $after){
       edges {
         node {
           id
@@ -15,6 +17,13 @@ export const GET_REPOSITORIES = gql`
           reviewCount
           ownerAvatarUrl
         }
+        cursor
+      }
+      pageInfo {
+       startCursor
+      hasPreviousPage
+      hasNextPage
+      endCursor
       }
     }
   }
@@ -45,7 +54,7 @@ export const ME = gql`
 `;
 
 export const GET_SINGLE_REPOSITORY = gql`
-  query ($id: ID!){
+  query ($id: ID!, $first: Int, $after: String){
     repository (id: $id) {
       id
       fullName
@@ -57,7 +66,7 @@ export const GET_SINGLE_REPOSITORY = gql`
       reviewCount
       ownerAvatarUrl
       url
-      reviews {
+      reviews (first: $first, after: $after){
       edges {
         node {
           id
@@ -70,28 +79,12 @@ export const GET_SINGLE_REPOSITORY = gql`
           }
         }
       }
+      pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+      }
     }
   }
 }
 `
-
-/*export const MY_REVIEWS = gql`
-  query {
-    me{
-      reviews {
-        edges {
-          node {
-            id
-            rating
-            createdAt
-            text
-            user {
-              username
-              id
-            }
-          }
-        }
-      }
-    }
-  }
-`*/
