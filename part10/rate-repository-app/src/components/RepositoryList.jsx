@@ -5,6 +5,7 @@ import RepositoryItem from './RepositoryItem';
 import { useState } from 'react';
 import HeaderWrapper from './HeaderWrap';
 import useDebounce from './hooks/useDebounce';
+import { onEndReach } from './utils/onEndReach';
 
 const styles = StyleSheet.create({
   separator: {
@@ -21,8 +22,8 @@ const RepositoryList = () => {
 
   const searchKeyword = useDebounce(search, 500)
 
-  const { data, error, loading } = useQuery(GET_REPOSITORIES, {
-    variables: { orderBy, orderDirection, searchKeyword },
+  const { data, error, loading, fetchMore } = useQuery(GET_REPOSITORIES, {
+    variables: { orderBy, orderDirection, searchKeyword, first: 4 },
     fetchPolicy: "cache-and-network",
   });
 
@@ -50,6 +51,7 @@ const RepositoryList = () => {
           ItemSeparatorComponent={ItemSeparator}
           renderItem={({ item }) => <RepositoryItem item={item} />}
           keyExtractor={item => item.id}
+          onEndReached={() => onEndReach(data?.repositories, loading, fetchMore)}
         />
       )}
     </>

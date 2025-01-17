@@ -8,6 +8,7 @@ import * as Linking from 'expo-linking';
 import { StyleSheet } from "react-native"
 import theme from "./theme"
 import ReviewItem from "./ReviewItem"
+import { onEndReach } from "./utils/onEndReach"
 
 const styles = StyleSheet.create({
   box: {
@@ -48,12 +49,14 @@ export const ItemSeparator = () => <View style={styles.separator} />;
 
 const SingleRepository = () => {
   const { id } = useParams()
-  const { data, error, loading } = useQuery(GET_SINGLE_REPOSITORY, { variables: { id: id }, fetchPolicy: 'cache-and-network' })
+  const { data, error, loading, fetchMore } = useQuery(GET_SINGLE_REPOSITORY,
+    { variables: { id: id, first: 3 }, fetchPolicy: 'cache-and-network' })
 
   if (loading) {
     return <Text>Loading...</Text>
   }
   if (error) {
+    console.log(error)
     return <Text>An Error has occured</Text>
   }
 
@@ -67,6 +70,7 @@ const SingleRepository = () => {
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={({ id }) => id}
       ListHeaderComponent={() => <RepositoryInfo repository={repositoryData} />}
+      onEndReached={() => onEndReach(data?.repository?.reviews, loading, fetchMore)}
     />
   )
 }
